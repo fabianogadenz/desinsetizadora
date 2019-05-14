@@ -1,4 +1,4 @@
-import 'package:desinsetizadora/bipagem/armadilha_bipagem_tile.dart';
+import 'package:desinsetizadora/screens/bipagem/armadilha_bipagem_tile.dart';
 import 'package:desinsetizadora/models/armadilha.dart';
 import 'package:flutter/material.dart';
 

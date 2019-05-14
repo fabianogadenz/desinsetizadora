@@ -1,7 +1,6 @@
+import 'package:desinsetizadora/blocs/clienteBloc.dart';
 import 'package:desinsetizadora/data/rest_api.dart';
-import 'package:desinsetizadora/models/armadilha.dart';
 import 'package:desinsetizadora/models/cliente.dart';
-import 'package:desinsetizadora/screens/armadilhas/components/armadilhas_list_tile.dart';
 import 'package:desinsetizadora/screens/clientes/components/clientes_list_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +10,17 @@ class ClientesList extends StatefulWidget {
 }
 
 class _ClientesListState extends State<ClientesList> {
-  var clientes = [
-    Cliente(id: 1, nome: "cliente 1", endereco: "endereco teste", telefone: "991025167", max_armadilhas: 12),
-    Cliente(id: 2, nome: "cliente 2", endereco: "endereco teste", telefone: "991025167", max_armadilhas: 22),
-    Cliente(id: 3, nome: "cliente 3", endereco: "endereco teste", telefone: "991025167", max_armadilhas: 32),
-  ];
+  @override
+  void initState() {
+    bloc.fetchAllCliente();
+    super.initState();
+  }
+
+//  @override
+//  void dispose() {
+//    bloc.dispose();
+//    super.dispose();
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +35,41 @@ class _ClientesListState extends State<ClientesList> {
         },
         child: Icon(Icons.add),
       ),
-      body: Container(
-          height: double.infinity,
-          width: double.infinity,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: ListView.builder(
-                    padding: EdgeInsets.only(top: 10.0),
-                    itemCount: clientes.length,
-                    itemBuilder: (context, index) {
-                      return ClientesListTile(clientes[index]);
-                    }),
-              ),
-            ],
-          )),
-    );
+      body:StreamBuilder(
+          stream: bloc.allCliente,
+          builder: (context, AsyncSnapshot<List<Cliente>> snapshot) {
+            if (snapshot.hasData) {
+              return buildList(snapshot);
+            } else if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+            return Center(child: CircularProgressIndicator());
+          }));
+
+//      Container(
+//          height: double.infinity,
+//          width: double.infinity,
+//          child: Column(
+//            children: <Widget>[
+//              Expanded(
+//                child: ListView.builder(
+//                    padding: EdgeInsets.only(top: 10.0),
+//                    itemCount: clientes.length,
+//                    itemBuilder: (context, index) {
+//                      return ClientesListTile(clientes[index]);
+//                    }),
+//              ),
+//            ],
+//          )),
+//    );
+  }
+
+  Widget buildList(AsyncSnapshot<List<Cliente>> snapshot) {
+    return ListView.builder(
+        padding: EdgeInsets.only(top: 10.0),
+        itemCount: snapshot.data.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ClientesListTile(snapshot.data[index]);
+        });
   }
 }

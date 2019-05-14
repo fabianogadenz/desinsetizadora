@@ -1,5 +1,5 @@
-import 'package:desinsetizadora/bipagem/atualiza_status.dart';
-import 'package:desinsetizadora/bipagem/bipagem_list.dart';
+import 'package:desinsetizadora/screens/bipagem/atualiza_status.dart';
+import 'package:desinsetizadora/screens/bipagem/bipagem_list.dart';
 import 'package:desinsetizadora/screens/armadilhas/armadilhas_list.dart';
 import 'package:desinsetizadora/screens/armadilhas/edit_armadilha.dart';
 import 'package:desinsetizadora/screens/clientes/cliente_detail.dart';

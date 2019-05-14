@@ -52,7 +52,7 @@ class _AtualizaStatusState extends State<AtualizaStatus> {
       body: Container(
           child: Column(
             children: <Widget>[
-              Text("TODO: dados pertinentes para a bipagem"),
+              Text("TODO: dados pertinentes para a screens.bipagem"),
               new Form(
                   key: _formKey,
                   child: new Column(children: <Widget>[
