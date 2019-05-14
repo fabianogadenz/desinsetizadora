@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         '/novoCliente': (context) => NewCliente(),
         '/visita': (context) => CalendarViewApp(),
         '/addVisitaClients': (context) => addVisita(),
-        '/ClienteDetail': (context) => ClienteDetail(),
+        '/clienteDetail': (context) => ClienteDetail(),
         '/bipagemList': (context) => BipagemList(),
         '/atualizaStatus': (context) => AtualizaStatus(),
 

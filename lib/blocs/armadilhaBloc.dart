@@ -4,7 +4,7 @@ import 'package:rxdart/rxdart.dart';
 
 class ArmadilhaBloc{
   final _repository = Repository();
-  final _armadilhaFetcher = PublishSubject<List<Armadilha>>();
+  final _armadilhaFetcher = BehaviorSubject<List<Armadilha>>();
 
   Observable<List<Armadilha>> get allArmadilha => _armadilhaFetcher.stream;
 

@@ -10,6 +10,7 @@ class RestApi {
   Client clientHttp = Client();
   static final BASE_URL = "http://localhost:8081";
   static final CLIENTES_URL = BASE_URL + "/clientes";
+  static final CLIENTE_URL = BASE_URL + "/cliente";
   static final ARMADILHAS_URL = BASE_URL + "/armadilhas";
 
   Future<List<Cliente>> buscaClientes() async {
@@ -58,7 +59,23 @@ class RestApi {
     if (response.statusCode == 200) {
       return compute(clienteFromJson, response.body);
     } else {
-      throw Exception("Falha ao carregar");
+      throw Exception("Falha ao carregar.");
+    }
+  }
+
+  Future addCliente(nome, telefone, endereco, maxArmadilhas) async{
+    final response = await clientHttp.post(CLIENTE_URL, body: {
+      "nome":nome.toString(),
+      "telefone": telefone.toString(),
+      "endereco": endereco.toString(),
+      "max_armadilhas": maxArmadilhas.toString(),
+      "id_login": 2.toString()
+    });
+    if(response.statusCode == 200){
+      print("status code 200");
+      return response;
+    }else{
+      throw Exception("Falha ao inserir Cliente.");
     }
   }
 }

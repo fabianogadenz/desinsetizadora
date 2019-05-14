@@ -45,23 +45,6 @@ class _ClientesListState extends State<ClientesList> {
             }
             return Center(child: CircularProgressIndicator());
           }));
-
-//      Container(
-//          height: double.infinity,
-//          width: double.infinity,
-//          child: Column(
-//            children: <Widget>[
-//              Expanded(
-//                child: ListView.builder(
-//                    padding: EdgeInsets.only(top: 10.0),
-//                    itemCount: clientes.length,
-//                    itemBuilder: (context, index) {
-//                      return ClientesListTile(clientes[index]);
-//                    }),
-//              ),
-//            ],
-//          )),
-//    );
   }
 
   Widget buildList(AsyncSnapshot<List<Cliente>> snapshot) {

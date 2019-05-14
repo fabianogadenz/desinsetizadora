@@ -6,20 +6,17 @@ class ClienteDetail extends StatefulWidget {
 }
 
 class _ClienteDetailState extends State<ClienteDetail> {
-
-  var localizacao;
-  var dateTimeCheckin;
-  var dateTimeCheckOut;
-  var latitude;
-  var longitude;
+  int idCliente = 0;
 
   @override
   Widget build(BuildContext context) {
+    idCliente = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.green,
-        title: Text("Detalhe do cliente: 1"),
+        title: Text("Detalhe do cliente: ${idCliente.toString()}"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
