@@ -43,7 +43,7 @@ class _ArmadilhasListState extends State<ArmadilhasList> {
           child: Icon(Icons.add),
         ),
         body: StreamBuilder(
-            stream: bloc.allArmadilha,
+            stream: bloc.allArmadilhas,
             builder: (context, AsyncSnapshot<List<Armadilha>> snapshot) {
               if (snapshot.hasData) {
                 return buildList(snapshot);

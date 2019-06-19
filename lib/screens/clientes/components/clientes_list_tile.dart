@@ -16,7 +16,7 @@ class ClientesListTile extends StatelessWidget {
             title: Text(clientes.nome),
             leading: Icon(Icons.people, size: 40,),
             onTap: () {
-              Navigator.pushNamed(context, '/clienteDetail', arguments: clientes.id);
+              Navigator.pushNamed(context, '/clienteDetail', arguments: clientes);
 
             },
             trailing: Icon(Icons.arrow_forward_ios),

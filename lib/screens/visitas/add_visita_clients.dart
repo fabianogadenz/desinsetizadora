@@ -4,8 +4,9 @@ import 'package:desinsetizadora/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class addVisita extends StatefulWidget {
-//  final DateTime data;
-//  addVisita(this.data);
+  final String data;
+
+  addVisita({Key key, @required this.data}) : super(key: key);
 
   @override
   _addVisitaState createState() => _addVisitaState();
@@ -16,36 +17,32 @@ class _addVisitaState extends State<addVisita> {
   RestApi rest = new RestApi();
   List<Cliente> listCli, listCliFiltrados;
   int quantidadeCli = 0;
-  int t =0;
-
-
+  int t = 0;
 
   @override
   Widget build(BuildContext context) {
+    final addVisita args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            "Criando visita dia 22/22/2222"),
+        title: Text("Criando visita dia "+ widget.data),
         centerTitle: true,
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        Navigator.pushNamed(context, '/ClienteDetail');
-      },
-      child: Text("a"),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/ClienteDetail');
+        },
+        child: Text("a"),
+      ),
       body: Column(
         children: <Widget>[
           TextField(
             controller: myController,
-            decoration: InputDecoration(
-                hintText: "Digite o nome do cliente",
-                prefixIcon: Icon(Icons.search)
-            ),
-            onChanged: (value){
+            decoration: InputDecoration(hintText: "Digite o nome do cliente", prefixIcon: Icon(Icons.search)),
+            onChanged: (value) {
               setState(() {
                 listCliFiltrados = Utils.clientFilter(value, listCli);
                 quantidadeCli = listCliFiltrados.length;
               });
-
             },
           ),
           Expanded(
@@ -85,12 +82,11 @@ class _addVisitaState extends State<addVisita> {
   }
 
   load() async {
-    if  (t==0){
+    if (t == 0) {
       listCli = listCliFiltrados = await rest.buscaClientes();
       quantidadeCli = await listCliFiltrados.length;
       t++;
     }
-
   }
 
   Widget WidgetTeste(Cliente Cli) {
@@ -102,8 +98,8 @@ class _addVisitaState extends State<addVisita> {
             subtitle: Text(Cli.endereco + Cli.telefone),
             leading: Icon(Icons.person),
             onTap: () {
-//              Navigator.of(context).push(MaterialPageRoute(
-//                  builder: (context) => cliente_screen(widget.data, Cli.id)));
+              Navigator.pushNamed(context, '/clienteDetail',
+                  arguments: Cli);
             },
           ),
         )

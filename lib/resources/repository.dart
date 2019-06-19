@@ -10,5 +10,6 @@ class Repository{
   Future<List<Cliente>> fetchAllCliente() => restApiProvider.fetchCliente();
 
   Future addSaveCliente(String nome, String telefone, String endereco, String maxArmadilhas) => restApiProvider.addCliente(nome, telefone, endereco, maxArmadilhas);
+  Future addSaveArmadilha(String nome, String observacao, String status) => restApiProvider.addArmadilha(nome, observacao, status);
 
 }

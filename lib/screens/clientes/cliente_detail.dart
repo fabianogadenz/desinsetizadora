@@ -1,22 +1,22 @@
+import 'package:desinsetizadora/models/cliente.dart';
 import 'package:flutter/material.dart';
 
 class ClienteDetail extends StatefulWidget {
+  final Cliente cli;
+
+  ClienteDetail({Key key, @required this.cli}) : super(key: key);
   @override
   _ClienteDetailState createState() => _ClienteDetailState();
 }
 
 class _ClienteDetailState extends State<ClienteDetail> {
-  int idCliente = 0;
-
   @override
   Widget build(BuildContext context) {
-    idCliente = ModalRoute.of(context).settings.arguments;
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.green,
-        title: Text("Detalhe do cliente: ${idCliente.toString()}"),
+        title: Text("Detalhe do cliente: ${widget.cli.id.toString()}"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -25,6 +25,7 @@ class _ClienteDetailState extends State<ClienteDetail> {
       body: Container(
         child: ListView(
           children: <Widget>[
+            //20621964
             Stack(
               children: <Widget>[
                 Container(
@@ -86,9 +87,9 @@ class _ClienteDetailState extends State<ClienteDetail> {
                             initiallyExpanded: true,
                             children: <Widget>[
                               Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                                LinhaTabela("Cliente", "teste", true),
-                                LinhaTabela("Telefone", "teste", false),
-                                LinhaTabela("Max armadilhas", "teste", true),
+                                LinhaTabela("Cliente", widget.cli.nome, true),
+                                LinhaTabela("Telefone", widget.cli.telefone, false),
+                                LinhaTabela("Max armadilhas", widget.cli.maxArmadilhas.toString(), true),
                                 LinhaTabela("Ultima visita", "teste", false),
 
                               ])

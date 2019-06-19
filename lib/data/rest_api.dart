@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:desinsetizadora/models/armadilha.dart';
 import 'package:desinsetizadora/models/cliente.dart';
+import 'package:desinsetizadora/models/visita.dart';
 import 'package:http/http.dart' show Client;
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -12,6 +13,9 @@ class RestApi {
   static final CLIENTES_URL = BASE_URL + "/clientes";
   static final CLIENTE_URL = BASE_URL + "/cliente";
   static final ARMADILHAS_URL = BASE_URL + "/armadilhas";
+  static final ADD_ARMADILHA_URL = BASE_URL + "/armadilha";
+  static final VISITA_URL = BASE_URL + "/visita";
+  static final VISITAS_URL = BASE_URL + "/visitas";
 
   Future<List<Cliente>> buscaClientes() async {
     List<Cliente> listCli = [];
@@ -26,20 +30,6 @@ class RestApi {
       return listCli;
     } on Exception catch (_) {}
   }
-
-//  Future<List<Armadilha>> buscaArmadilhas() async {
-//    List<Armadilha> listArmadilhas = [];
-//    try {
-//      http.Response response = await http.get(ARMADILHAS_URL);
-//      var jsonData = json.decode(response.body);
-//      print(jsonData.toString());
-//
-//      for (var u in jsonData) {
-//        listArmadilhas.add(new Armadilha.fromJson(u));
-//      }
-//      return listArmadilhas;
-//    } on Exception catch (_) {}
-//  }
 
   Future<List<Armadilha>> fetchArmadilha() async {
     print('entrou no fetch armadilha do http');
@@ -63,6 +53,8 @@ class RestApi {
     }
   }
 
+
+
   Future addCliente(nome, telefone, endereco, maxArmadilhas) async{
     final response = await clientHttp.post(CLIENTE_URL, body: {
       "nome":nome.toString(),
@@ -77,5 +69,34 @@ class RestApi {
     }else{
       throw Exception("Falha ao inserir Cliente.");
     }
+  }
+
+  Future addArmadilha(nome, observacao, status) async{
+    print(nome.toString() + " "+ observacao.toString() + " " + status.toString());
+    final response = await clientHttp.post(ADD_ARMADILHA_URL, body: {
+      "nome":nome.toString(),
+      "obs": observacao.toString(),
+      "situacao": status.toString(),
+    });
+    if(response.statusCode == 200){
+      print("status code 200");
+      return response;
+    }else{
+      throw Exception("Falha ao inserir Armadilha.");
+    }
+  }
+
+  Future<List<Visita>> buscaVisitasData(DateTime data) async {
+    List<Visita> listVisita = [];
+    try {
+      final response = await clientHttp.get(VISITAS_URL+ "/"+ data.toString());
+      var jsonData = json.decode(response.body);
+      print(jsonData.toString());
+
+      for (var u in jsonData) {
+        listVisita.add(new Visita.fromJson(u));
+      }
+      return listVisita;
+    } on Exception catch (_) {}
   }
 }

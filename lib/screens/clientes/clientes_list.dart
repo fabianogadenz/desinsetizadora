@@ -1,5 +1,4 @@
 import 'package:desinsetizadora/blocs/clienteBloc.dart';
-import 'package:desinsetizadora/data/rest_api.dart';
 import 'package:desinsetizadora/models/cliente.dart';
 import 'package:desinsetizadora/screens/clientes/components/clientes_list_tile.dart';
 import 'package:flutter/material.dart';
