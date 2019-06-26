@@ -9,6 +9,7 @@ class VisitaListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("print");
     return Row(
       children: <Widget>[
         Expanded(

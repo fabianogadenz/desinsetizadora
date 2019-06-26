@@ -1,3 +1,4 @@
+import 'package:desinsetizadora/arguments/clienteArgument.dart';
 import 'package:desinsetizadora/models/cliente.dart';
 import 'package:desinsetizadora/screens/armadilhas/armadilhas_list.dart';
 import 'package:desinsetizadora/screens/armadilhas/edit_armadilha.dart';
@@ -36,10 +37,10 @@ class RouteGenerator{
       case '/visita':
         return MaterialPageRoute(builder: (_) => VisitaList());
       case '/clienteDetail':
-        if (args is Cliente){
+        if (args is ClienteArgument){
           return MaterialPageRoute(
             builder: (_) => ClienteDetail(
-              cli:args,
+              cliargument:args,
             ),
           );
         }

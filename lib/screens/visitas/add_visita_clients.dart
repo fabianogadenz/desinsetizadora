@@ -1,3 +1,4 @@
+import 'package:desinsetizadora/arguments/clienteArgument.dart';
 import 'package:desinsetizadora/data/rest_api.dart';
 import 'package:desinsetizadora/models/cliente.dart';
 import 'package:desinsetizadora/utils/utils.dart';
@@ -21,7 +22,6 @@ class _addVisitaState extends State<addVisita> {
 
   @override
   Widget build(BuildContext context) {
-    final addVisita args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text("Criando visita dia "+ widget.data),
@@ -98,8 +98,9 @@ class _addVisitaState extends State<addVisita> {
             subtitle: Text(Cli.endereco + Cli.telefone),
             leading: Icon(Icons.person),
             onTap: () {
+              ClienteArgument clienteArgument = new ClienteArgument(Cli, widget.data);
               Navigator.pushNamed(context, '/clienteDetail',
-                  arguments: Cli);
+                  arguments: clienteArgument);
             },
           ),
         )

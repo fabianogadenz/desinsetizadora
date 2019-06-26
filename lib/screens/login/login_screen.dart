@@ -1,3 +1,4 @@
+import 'package:desinsetizadora/data/login.dart';
 import 'package:flutter/material.dart';
 import 'package:desinsetizadora/screens/home_screen.dart';
 
@@ -178,6 +179,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     } else {
       animController.forward();
     }
+    Login login = Login();
+    print("teste login "+ login.doLogin(emailController.text.toString(), senhaController.text.toString()).toString());
   }
 
   Widget buttonSignIn(

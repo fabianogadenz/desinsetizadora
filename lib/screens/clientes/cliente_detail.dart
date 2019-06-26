@@ -1,26 +1,60 @@
-import 'package:desinsetizadora/models/cliente.dart';
+import 'package:desinsetizadora/arguments/clienteArgument.dart';
+import 'package:desinsetizadora/data/rest_api.dart';
 import 'package:flutter/material.dart';
 
 class ClienteDetail extends StatefulWidget {
-  final Cliente cli;
+  final ClienteArgument cliargument;
 
-  ClienteDetail({Key key, @required this.cli}) : super(key: key);
+  ClienteDetail({Key key, @required this.cliargument}) : super(key: key);
+
   @override
   _ClienteDetailState createState() => _ClienteDetailState();
 }
 
 class _ClienteDetailState extends State<ClienteDetail> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  RestApi rest = RestApi();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.green,
-        title: Text("Detalhe do cliente: ${widget.cli.id.toString()}"),
+        title: Text("Detalhe do cliente: ${widget.cliargument.cli.id.toString()}"),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.calendar_today),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          rest.addVisita(widget.cliargument.cli, widget.cliargument.data).then((value) {
+
+
+            final snackbarSuccess = SnackBar(
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+              content: Text('Visita criada com sucesso!'),
+            );
+
+            final snackbarErro = SnackBar(
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 3),
+              content: Text('Ocorreu algum erro!'),
+            );
+
+
+            if (value == 200) {
+              _scaffoldKey.currentState.showSnackBar(snackbarSuccess);
+              Future.delayed(const Duration(milliseconds: 2000), () {
+                Navigator.pop(context);
+              });
+            }
+            else
+              _scaffoldKey.currentState.showSnackBar(snackbarSuccess);
+
+          });
+        },
+        icon: Icon(Icons.calendar_today),
+        label: Text(widget.cliargument.data),
       ),
       body: Container(
         child: ListView(
@@ -87,26 +121,24 @@ class _ClienteDetailState extends State<ClienteDetail> {
                             initiallyExpanded: true,
                             children: <Widget>[
                               Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                                LinhaTabela("Cliente", widget.cli.nome, true),
-                                LinhaTabela("Telefone", widget.cli.telefone, false),
-                                LinhaTabela("Max armadilhas", widget.cli.maxArmadilhas.toString(), true),
+                                LinhaTabela("Cliente", widget.cliargument.cli.nome, true),
+                                LinhaTabela("Telefone", widget.cliargument.cli.telefone, false),
+                                LinhaTabela("Max armadilhas", widget.cliargument.cli.maxArmadilhas.toString(), true),
                                 LinhaTabela("Ultima visita", "teste", false),
-
                               ])
-                            ]
-                        )
-                    ),
+                            ])),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        RaisedButton(onPressed: (){
-                          Navigator.pushNamed(context, '/armadilhas');
-                        },
-                          child: Text("Armadilhas Cadastradas"),)
+                        RaisedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/armadilhas');
+                          },
+                          child: Text("Armadilhas Cadastradas"),
+                        )
                       ],
                     )
-
                   ],
                 ),
               ],

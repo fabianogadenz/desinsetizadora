@@ -19,12 +19,14 @@ class _VisitaListState extends State<VisitaList> {
     Visita(id: 1, data: "01/01/2019", hora_fim: "01/01/2019", hora_inicio: "01/01/2019", id_cliente: 2),
     Visita(id: 1, data: "01/01/2019", hora_fim: "01/01/2019", hora_inicio: "01/01/2019", id_cliente: 2),
   ];
+
   void handleNewDate(date) {
     print(date.toString());
     setState(() {
       data_escolhida = date;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +36,7 @@ class _VisitaListState extends State<VisitaList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/addVisitaClients',
-              arguments: data_escolhida.day.toString()+"/"+data_escolhida.month.toString()+"/"+data_escolhida.year.toString());
+              arguments: data_escolhida.day.toString() + "/" + data_escolhida.month.toString() + "/" + data_escolhida.year.toString());
         },
         child: Icon(Icons.add),
       ),
@@ -64,7 +66,8 @@ class _VisitaListState extends State<VisitaList> {
               Expanded(
                 child: Container(
                   child: FutureBuilder(
-                      future: rest.buscaVisitasData(data_escolhida),
+                      future: rest.buscaVisitasData(
+                          data_escolhida.day.toString() + "/" + data_escolhida.month.toString() + "/" + data_escolhida.year.toString()),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         switch (snapshot.connectionState) {
                           case ConnectionState.none:
@@ -75,11 +78,7 @@ class _VisitaListState extends State<VisitaList> {
                               ),
                             );
                           case ConnectionState.done:
-                            return ListView.builder(
-                                itemCount: visitas.length,
-                                itemBuilder: (context, index) {
-                                  return VisitaListTile(visitas[index]);
-                                });
+                            return createListView(context,snapshot);
                           default:
                             return null;
                         }
@@ -90,7 +89,49 @@ class _VisitaListState extends State<VisitaList> {
           )),
     );
   }
+
+  Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
+    List<Visita> listVisita = snapshot.data;
+    if (listVisita.toString() != "null" && listVisita.length.toString() != null && listVisita.length > 0) {
+      return Column(children: <Widget>[
+        Expanded(
+            child: ListView.builder(
+                itemCount: listVisita.length,
+                itemBuilder: (context, index) {
+                  return VisitaListTile(listVisita[index]);
+                }))
+      ]);
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: Column(
+              children: <Widget>[
+                Center(
+                  child: Icon(
+                    Icons.error_outline,
+                    size: 70.0,
+                    color: Colors.black87,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: Center(
+                    child: Text(
+                      "Você não possui visitas neste dia",
+                      style: TextStyle(color: Colors.black87, fontSize: 20.0),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      );
+    }
+  }
+
+
 }
-
-
-

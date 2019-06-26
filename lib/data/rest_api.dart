@@ -86,17 +86,43 @@ class RestApi {
     }
   }
 
-  Future<List<Visita>> buscaVisitasData(DateTime data) async {
+  Future<List<Visita>> buscaVisitasData(String data) async {
     List<Visita> listVisita = [];
     try {
-      final response = await clientHttp.get(VISITAS_URL+ "/"+ data.toString());
+      final response = await clientHttp.get(VISITAS_URL+ "/"+ data.replaceAll("/", "-"));
       var jsonData = json.decode(response.body);
       print(jsonData.toString());
 
       for (var u in jsonData) {
+
         listVisita.add(new Visita.fromJson(u));
       }
       return listVisita;
     } on Exception catch (_) {}
   }
+
+  Future addVisita(Cliente cli, data) async{
+    final response = await clientHttp.post(VISITA_URL, body: {
+      "data":data,
+      "id_cliente": cli.id.toString(),
+    });
+    if(response.statusCode == 200){
+      print("status code 200");
+      return response.statusCode;
+    }else{
+      throw Exception("Falha ao inserir visita.");
+    }
+  }
+
+  Future<Visita> buscaVisitaId(int id) async {
+    Visita vis;
+    try {
+      final response = await clientHttp.get(VISITA_URL+ "/"+ id.toString());
+      var jsonData = json.decode(response.body);
+
+      vis = Visita.fromJson(jsonData);
+      return vis;
+    } on Exception catch (_) {}
+  }
+
 }

@@ -16,7 +16,7 @@ class Login{
 
   Future<bool> doLogin(user, pass) async {
     try {
-      http.Response response = await http.post(LOGIN_URL, body: {
+      http.Response response = await http.get(LOGIN_URL, headers: {
         "email": user,
         "senha": pass
       });

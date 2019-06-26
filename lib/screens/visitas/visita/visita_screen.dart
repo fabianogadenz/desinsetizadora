@@ -1,4 +1,6 @@
+import 'package:desinsetizadora/data/rest_api.dart';
 import 'package:desinsetizadora/models/armadilha.dart';
+import 'package:desinsetizadora/models/visita.dart';
 import 'package:desinsetizadora/screens/armadilhas/components/armadilhas_list_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,7 @@ class VisitaScreen extends StatefulWidget {
 }
 
 class _VisitaScreenState extends State<VisitaScreen> {
+  RestApi rest = new RestApi();
   var armadilhas = [
     Armadilha(id: 1, nome: "armadilha 1", obs: "obs teste", situacao: "DISPONIVEL"),
     Armadilha(id: 2, nome: "armadilha 2", obs: "obs teste", situacao: "INDISPONIVEL"),
@@ -85,44 +88,35 @@ class _VisitaScreenState extends State<VisitaScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                        margin: EdgeInsets.all(5.0),
-                        color: Colors.white,
-                        child: ExpansionTile(
-                            title: Text(
-                              "Detalhes da visita",
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500, color: Colors.grey[700]),
-                            ),
-                            leading: Icon(
-                              Icons.description,
-                              color: Colors.grey,
-                            ),
-                            initiallyExpanded: true,
-                            children: <Widget>[
-                              Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                                LinhaTabela("Cliente", "teste", true),
-                                LinhaTabela("Telefone", "teste", false),
-                                LinhaTabela("Max armadilhas", "teste", true),
-                                LinhaTabela("Armadilhas alocadas", "teste", false),
-                                LinhaTabela("Hora início", "teste", true),
-                                LinhaTabela("Hora fim", "teste", false),
-
-                              ])
-                            ]
-                        )
-                    ),
+                    FutureBuilder(
+                        future: rest.buscaVisitaId(widget._codigoVisita),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                            case ConnectionState.waiting:
+                              return Container(
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            case ConnectionState.done:
+                              return conteudoVisita(snapshot.data);
+                            default:
+                              return null;
+                          }
+                        }),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        RaisedButton(onPressed: (){
-                          Navigator.pushNamed(context, '/armadilhas');
-                        },
-                        child: Text("Ver Armadilhas Alocadas"),)
+                        RaisedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/armadilhas');
+                          },
+                          child: Text("Ver Armadilhas Alocadas"),
+                        )
                       ],
                     )
-
                   ],
                 ),
               ],
@@ -132,10 +126,6 @@ class _VisitaScreenState extends State<VisitaScreen> {
       ),
     );
   }
-
-//  load() {
-//    return rest.buscaVisita(widget._codigoVisita);
-//  }
 
   Widget LinhaTabela(String nome, String conteudo, bool zebrado) {
     int zebradoCor = 255;
@@ -171,5 +161,33 @@ class _VisitaScreenState extends State<VisitaScreen> {
         ),
       ],
     );
+  }
+
+  Widget conteudoVisita(Visita vis) {
+    print(vis.id);
+    return Container(
+        margin: EdgeInsets.all(5.0),
+        color: Colors.white,
+        child: ExpansionTile(
+            title: Text(
+              "Detalhes da visita",
+              textAlign: TextAlign.start,
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500, color: Colors.grey[700]),
+            ),
+            leading: Icon(
+              Icons.description,
+              color: Colors.grey,
+            ),
+            initiallyExpanded: true,
+            children: <Widget>[
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                LinhaTabela("Cliente", vis.id_cliente.toString(), true),
+                LinhaTabela("Telefone", "teste", false),
+                LinhaTabela("Max armadilhas", "teste", true),
+                LinhaTabela("Armadilhas alocadas", "teste", false),
+                LinhaTabela("Hora início", vis.hora_inicio.toString(), true),
+                LinhaTabela("Hora fim", vis.hora_fim.toString(), false),
+              ])
+            ]));
   }
 }

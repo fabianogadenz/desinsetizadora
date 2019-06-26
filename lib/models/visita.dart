@@ -6,8 +6,8 @@ class Visita{
   String hora_inicio;
   String hora_fim;
   String obs;
-  String createdAt;
-  String updatedAt;
+  DateTime createdAt;
+  DateTime updatedAt;
 
 
   Visita(
@@ -28,8 +28,6 @@ class Visita{
     hora_inicio = json['hora_inicio'];
     hora_fim = json['hora_fim'];
     obs = json['obs'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
