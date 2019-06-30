@@ -17,7 +17,7 @@ class VisitaListTile extends StatelessWidget {
             title: Text(visita.id_cliente.toString()),
             leading: Icon(Icons.people, size: 40,),
             onTap: () {
-              Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context) => new VisitaScreen(1)));
+              Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context) => new VisitaScreen(visita.id)));
             },
             trailing: Icon(Icons.arrow_forward_ios),
             subtitle: Text("${visita.data}"),

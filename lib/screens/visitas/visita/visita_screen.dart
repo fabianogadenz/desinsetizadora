@@ -1,5 +1,6 @@
 import 'package:desinsetizadora/data/rest_api.dart';
 import 'package:desinsetizadora/models/armadilha.dart';
+import 'package:desinsetizadora/models/cliente_visita.dart';
 import 'package:desinsetizadora/models/visita.dart';
 import 'package:desinsetizadora/screens/armadilhas/components/armadilhas_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,7 @@ class VisitaScreen extends StatefulWidget {
 
 class _VisitaScreenState extends State<VisitaScreen> {
   RestApi rest = new RestApi();
-  var armadilhas = [
-    Armadilha(id: 1, nome: "armadilha 1", obs: "obs teste", situacao: "DISPONIVEL"),
-    Armadilha(id: 2, nome: "armadilha 2", obs: "obs teste", situacao: "INDISPONIVEL"),
-    Armadilha(id: 3, nome: "armadilha 3", obs: "obs teste", situacao: "DISPONIVEL"),
-  ];
+
   var localizacao;
   var dateTimeCheckin;
   var dateTimeCheckOut;
@@ -89,7 +86,7 @@ class _VisitaScreenState extends State<VisitaScreen> {
                       ),
                     ),
                     FutureBuilder(
-                        future: rest.buscaVisitaId(widget._codigoVisita),
+                        future: rest.buscaVisitaClienteInfo(widget._codigoVisita),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.none:
@@ -163,8 +160,7 @@ class _VisitaScreenState extends State<VisitaScreen> {
     );
   }
 
-  Widget conteudoVisita(Visita vis) {
-    print(vis.id);
+  Widget conteudoVisita(ClienteVisita vis) {
     return Container(
         margin: EdgeInsets.all(5.0),
         color: Colors.white,
@@ -181,12 +177,12 @@ class _VisitaScreenState extends State<VisitaScreen> {
             initiallyExpanded: true,
             children: <Widget>[
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                LinhaTabela("Cliente", vis.id_cliente.toString(), true),
-                LinhaTabela("Telefone", "teste", false),
-                LinhaTabela("Max armadilhas", "teste", true),
+                LinhaTabela("Cliente", vis.idCliente.toString(), true),
+                LinhaTabela("Telefone", vis.telefone, false),
+                LinhaTabela("Max armadilhas", vis.maxArmadilhas.toString(), true),
                 LinhaTabela("Armadilhas alocadas", "teste", false),
-                LinhaTabela("Hora início", vis.hora_inicio.toString(), true),
-                LinhaTabela("Hora fim", vis.hora_fim.toString(), false),
+                LinhaTabela("Hora início", vis.horaInicio.toString(), true),
+                LinhaTabela("Hora fim", vis.horaFim.toString(), false),
               ])
             ]));
   }

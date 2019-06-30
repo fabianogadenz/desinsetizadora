@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:desinsetizadora/models/armadilha.dart';
 import 'package:desinsetizadora/models/cliente.dart';
+import 'package:desinsetizadora/models/cliente_visita.dart';
 import 'package:desinsetizadora/models/visita.dart';
 import 'package:http/http.dart' show Client;
 import 'dart:async';
@@ -16,6 +17,10 @@ class RestApi {
   static final ADD_ARMADILHA_URL = BASE_URL + "/armadilha";
   static final VISITA_URL = BASE_URL + "/visita";
   static final VISITAS_URL = BASE_URL + "/visitas";
+  static final VISITS_CLIENTE_INFO_URL = BASE_URL + "/visita_cliente_info";
+  static final LAST_ARMADILHA = BASE_URL + "/last_armadilha";
+  static final ARMADILHAS_CLIENTES = BASE_URL + "/armadilhas-clientes";
+
 
   Future<List<Cliente>> buscaClientes() async {
     List<Cliente> listCli = [];
@@ -124,5 +129,43 @@ class RestApi {
       return vis;
     } on Exception catch (_) {}
   }
+
+  Future<ClienteVisita> buscaVisitaClienteInfo(int id) async {
+    ClienteVisita _cliVisInfo;
+    print("teste"+ id.toString());
+    try {
+      final response = await clientHttp.get(VISITS_CLIENTE_INFO_URL+ "/"+ id.toString());
+      var jsonData = json.decode(response.body);
+
+      print(jsonData.toString());
+      _cliVisInfo = ClienteVisita.fromJson(jsonData[0]);
+      print(_cliVisInfo.id.toString());
+      return _cliVisInfo;
+    } on Exception catch (_) {}
+  }
+
+  Future<int> buscaIdUltimaArmadilha() async {
+    try {
+      final response = await clientHttp.get(LAST_ARMADILHA);
+      var jsonData = json.decode(response.body);
+      return int.parse(jsonData[0]["ultima_armadilha"].toString());
+    } on Exception catch (_) {}
+  }
+
+  Future addArmadilhasClientes(id_armadilha, id_cliente, situacao) async{
+    final response = await clientHttp.post(ARMADILHAS_CLIENTES, body: {
+      "id_armadilha":id_armadilha.toString(),
+      "id_cliente": id_cliente.toString(),
+      "situacao": situacao.toString(),
+    });
+    if(response.statusCode == 200){
+      print("status code 200");
+      return response;
+    }else{
+      throw Exception("Falha ao inserir DADOS.");
+    }
+  }
+
+
 
 }

@@ -1,7 +1,7 @@
+import 'package:desinsetizadora/data/rest_api.dart';
+import 'package:desinsetizadora/models/cliente.dart';
 import 'package:flutter/material.dart';
-
 import 'package:desinsetizadora/blocs/armadilhaBloc.dart';
-import 'package:flutter/material.dart';
 
 class newArmadilha extends StatefulWidget {
   @override
@@ -10,23 +10,20 @@ class newArmadilha extends StatefulWidget {
 
 class _NewArmadilhaState extends State<newArmadilha> {
   List _situacoes = ["Disponível", "Ocupado", "Danificado", "Manutenção Pendente", "Em Manutenção"];
-  List _clientes = ["Cliente 1", "Cliente 2", "Cliente 3", "Cliente 4", "Cliente 5"];
+  RestApi rest = RestApi();
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController nomeController = new TextEditingController();
   TextEditingController obsController = new TextEditingController();
   List<DropdownMenuItem<String>> _dropDownMenuItems;
-  List<DropdownMenuItem<String>> _dropDownClientes;
 
   String _situacaoArmadilha;
-  String _cliente;
+  String cliente_selecionado;
 
   @override
   void initState() {
     _dropDownMenuItems = buildAndGetDropDownMenuItems(_situacoes);
-    _dropDownClientes = buildAndGetDropDownMenuItems(_clientes);
     _situacaoArmadilha = _dropDownMenuItems[0].value;
-    _cliente = _dropDownClientes[0].value;
     super.initState();
   }
 
@@ -41,12 +38,13 @@ class _NewArmadilhaState extends State<newArmadilha> {
   void changedDropDownItem(String selectedSituacao) {
     setState(() {
       _situacaoArmadilha = selectedSituacao;
-
     });
   }
-  void changedDropDownCliente(String selectedSituacao) {
+
+
+  void changedDropDownCliente2(String selectedCliente) {
     setState(() {
-      _cliente = selectedSituacao;
+      cliente_selecionado = selectedCliente;
     });
   }
 
@@ -62,13 +60,13 @@ class _NewArmadilhaState extends State<newArmadilha> {
                 Icons.delete,
                 color: Colors.white,
               ),
-              onPressed: () {
-              })
+              onPressed: () {})
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async{
+        onPressed: () async {
           bloc.addSaveArmadilha();
+          bloc.ligaArmadilhaCliente(cliente_selecionado);
           await Future.delayed(const Duration(milliseconds: 500));
           bloc.fetchAllArmadilha();
           Navigator.pop(context);
@@ -77,95 +75,109 @@ class _NewArmadilhaState extends State<newArmadilha> {
       ),
       body: Container(
           child: Column(
-            children: <Widget>[
-              new Form(
-                  key: _formKey,
-                  child: new Column(children: <Widget>[
-                    TextField(
-                      onChanged: bloc.updateNome,
-                      controller: nomeController,
-                      keyboardType: TextInputType.text,
-                      enabled: true,
-                      //initialValue: "teste@hotmail.com",
-                      obscureText: false,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 18.0,
-                      ),
-                      decoration: new InputDecoration(
-                        icon: new Icon(
-                          Icons.people,
+        children: <Widget>[
+          new Form(
+              key: _formKey,
+              child: new Column(children: <Widget>[
+                TextField(
+                  onChanged: bloc.updateNome,
+                  controller: nomeController,
+                  keyboardType: TextInputType.text,
+                  enabled: true,
+                  //initialValue: "teste@hotmail.com",
+                  obscureText: false,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                  ),
+                  decoration: new InputDecoration(
+                    icon: new Icon(
+                      Icons.people,
+                      color: Colors.green,
+                    ),
+                    border: InputBorder.none,
+                    hintText: "Nome",
+                    hintStyle: const TextStyle(color: Colors.black, fontSize: 18.0),
+                    contentPadding: const EdgeInsets.only(top: 30, right: 30.0, bottom: 30.0, left: 5.0),
+                  ),
+                ),
+                TextField(
+                  onChanged: bloc.updateObservacao,
+                  controller: obsController,
+                  keyboardType: TextInputType.text,
+                  enabled: true,
+                  //initialValue: "teste@hotmail.com",
+                  obscureText: false,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                  ),
+                  decoration: new InputDecoration(
+                    icon: new Icon(
+                      Icons.people,
+                      color: Colors.green,
+                    ),
+                    border: InputBorder.none,
+                    hintText: "Observação",
+                    hintStyle: const TextStyle(color: Colors.black, fontSize: 18.0),
+                    contentPadding: const EdgeInsets.only(top: 30, right: 30.0, bottom: 30.0, left: 5.0),
+                  ),
+                ),
+                new Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: new Container(
+                    decoration: new BoxDecoration(
+                      border: new Border(
+                        bottom: new BorderSide(
                           color: Colors.green,
                         ),
-                        border: InputBorder.none,
-                        hintText: "Nome",
-                        hintStyle: const TextStyle(color: Colors.black, fontSize: 18.0),
-                        contentPadding: const EdgeInsets.only(top: 30, right: 30.0, bottom: 30.0, left: 5.0),
                       ),
                     ),
-                    TextField(
-                      onChanged: bloc.updateObservacao,
-                      controller: obsController,
-                      keyboardType: TextInputType.text,
-                      enabled: true,
-                      //initialValue: "teste@hotmail.com",
-                      obscureText: false,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 18.0,
-                      ),
-                      decoration: new InputDecoration(
-                        icon: new Icon(
-                          Icons.people,
-                          color: Colors.green,
-                        ),
-                        border: InputBorder.none,
-                        hintText: "Observação",
-                        hintStyle: const TextStyle(color: Colors.black, fontSize: 18.0),
-                        contentPadding: const EdgeInsets.only(top: 30, right: 30.0, bottom: 30.0, left: 5.0),
-                      ),
+                    child: DropdownButton(
+                      isExpanded: true,
+                      value: _situacaoArmadilha,
+                      items: _dropDownMenuItems,
+                      //onChanged: bloc.updateStatus,
+                      onChanged: changedDropDownItem,
                     ),
+                  ),
+                ),
 
-                    new Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: new Container(
-                        decoration: new BoxDecoration(
-                          border: new Border(
-                            bottom: new BorderSide(
-                              color: Colors.green,
+                FutureBuilder<List<Cliente>>(
+                    future: rest.fetchCliente(),
+                    builder: (BuildContext context, AsyncSnapshot<List<Cliente>> snapshot) {
+                      if (!snapshot.hasData) return CircularProgressIndicator();
+                      return new Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: new Container(
+                          decoration: new BoxDecoration(
+                            border: new Border(
+                              bottom: new BorderSide(
+                                color: Colors.green,
+                              ),
                             ),
                           ),
-                        ),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          value: _situacaoArmadilha,
-                          items: _dropDownMenuItems,
-                          onChanged: bloc.updateStatus,
-                        ),
-                      ),
-                    ),
+                          child:
+                          DropdownButton<String>(
+                            isExpanded: true,
+                            value: cliente_selecionado,
+                            items: snapshot.data.map((cli) => DropdownMenuItem(child: Text(cli.nome), value: cli.id.toString(),)).toList(),
 
-                    new Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: new Container(
-                        decoration: new BoxDecoration(
-                          border: new Border(
-                            bottom: new BorderSide(
-                              color: Colors.green,
-                            ),
+                            onChanged: changedDropDownCliente2,
                           ),
+
+
                         ),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          value: _cliente,
-                          items: _dropDownClientes,
-                          onChanged: changedDropDownCliente,
-                        ),
-                      ),
-                    ),
-                  ]))
-            ],
-          )),
+                      );
+                    }),
+                SizedBox(height: 20.0),
+                cliente_selecionado != null
+                    ? Text("Cliente selecionado: " + cliente_selecionado )
+                    : Text("No cliente selected"),
+              ]
+              ))
+        ],
+      )),
     );
   }
 }
