@@ -12,6 +12,8 @@ dependencies:
   dio: ^2.1.0
   rxdart: ^0.20.0
   flutter_calendar: ^0.0.8
+  floating_action_row: ^0.0.3
+
 
   flutter:
     sdk: flutter

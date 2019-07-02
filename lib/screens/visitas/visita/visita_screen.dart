@@ -1,12 +1,16 @@
+import 'package:desinsetizadora/arguments/clienteArgument.dart';
+import 'package:desinsetizadora/arguments/visitaArgument.dart';
 import 'package:desinsetizadora/data/rest_api.dart';
 import 'package:desinsetizadora/models/armadilha.dart';
 import 'package:desinsetizadora/models/cliente_visita.dart';
 import 'package:desinsetizadora/models/visita.dart';
 import 'package:desinsetizadora/screens/armadilhas/components/armadilhas_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:floating_action_row/floating_action_row.dart';
 
 class VisitaScreen extends StatefulWidget {
   int _codigoVisita;
+  int _codigoCliente;
 
   VisitaScreen(this._codigoVisita);
 
@@ -15,8 +19,28 @@ class VisitaScreen extends StatefulWidget {
 }
 
 class _VisitaScreenState extends State<VisitaScreen> {
-  RestApi rest = new RestApi();
+  @override
+  initState() {
+    super.initState();
+    // Add listeners to this class
 
+    cliVis = rest.buscaVisitaClienteInfo(widget._codigoVisita).then((cli) {
+      setState(() {
+        if(cli.horaInicio != null && cli.horaFim != null)
+          _visitaAndamento = "FINALIZADO";
+        else if(cli.horaInicio != null )
+          _visitaAndamento = "EM_ANDAMENTO";
+        else if(cli.horaInicio != null )
+          _visitaAndamento = "PENDENTE";
+      });
+    });
+  }
+
+  RestApi rest = new RestApi();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  String _visitaAndamento = "PENDENTE";
+  Widget teste;
+  Future<ClienteVisita> cliVis;
   var localizacao;
   var dateTimeCheckin;
   var dateTimeCheckOut;
@@ -25,18 +49,72 @@ class _VisitaScreenState extends State<VisitaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var children = List<FloatingActionRowChild>();
+    children.add(
+      FloatingActionRowButton(
+        icon: Icon(Icons.done),
+        onTap: () {
+          final snackbarFim = SnackBar(
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+            content: Text('Visita finalizada!'),
+          );
+          rest.checkOutVisita(widget._codigoVisita,
+                    DateTime.now().day.toString() + "/" + DateTime.now().month.toString() + "/" + DateTime.now().year.toString());
+          _scaffoldKey.currentState.showSnackBar(snackbarFim);
+
+          Future.delayed(Duration(seconds: 2)).then((teste){
+            Navigator.pushNamed(context, '/visita');
+          });
+
+        },
+      ),
+    );
+    children.add(
+      FloatingActionRowDivider(),
+    );
+    children.add(
+      FloatingActionRowButton(
+        icon: Icon(Icons.arrow_forward),
+        onTap: () {
+          VisitaArgument visitaArgument = new VisitaArgument(widget._codigoVisita.toString(), widget._codigoCliente.toString());
+          Navigator.pushNamed(context, '/bipagemList', arguments: visitaArgument);
+        },
+      ),
+    );
+
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.green,
         title: Text("Detalhe da Visita: " + widget._codigoVisita.toString()),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/bipagemList');
-        },
-        child: Text("Iniciar"),
-      ),
+      floatingActionButton: (_visitaAndamento == "PENDENTE")
+          ? FloatingActionButton(
+              onPressed: () {
+                final snackbarInicio = SnackBar(
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 3),
+                  content: Text('Visita iniciada com sucesso!'),
+                );
+                rest.checkinVisita(widget._codigoVisita,
+                    DateTime.now().day.toString() + "/" + DateTime.now().month.toString() + "/" + DateTime.now().year.toString());
+                _scaffoldKey.currentState.showSnackBar(snackbarInicio);
+
+                Future.delayed(Duration(seconds: 3)).then((teste){
+                  VisitaArgument visitaArgument = new VisitaArgument(widget._codigoVisita.toString(), widget._codigoCliente.toString());
+                  Navigator.pushNamed(context, '/bipagemList', arguments: visitaArgument);
+                });
+              },
+              child: Text("Iniciar"),
+            )
+          : (_visitaAndamento == "EM_ANDAMENTO") ? FloatingActionRow(
+              children: children,
+              color: Colors.green,
+              elevation: 4,
+            )
+          : Row(),
       body: Container(
         child: ListView(
           children: <Widget>[
@@ -108,7 +186,7 @@ class _VisitaScreenState extends State<VisitaScreen> {
                       children: <Widget>[
                         RaisedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/armadilhas');
+                            Navigator.pushNamed(context, '/armadilhas-clientes', arguments: widget._codigoCliente.toString());
                           },
                           child: Text("Ver Armadilhas Alocadas"),
                         )
@@ -161,6 +239,7 @@ class _VisitaScreenState extends State<VisitaScreen> {
   }
 
   Widget conteudoVisita(ClienteVisita vis) {
+    widget._codigoCliente = vis.idCliente;
     return Container(
         margin: EdgeInsets.all(5.0),
         color: Colors.white,

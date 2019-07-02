@@ -13,12 +13,6 @@ class _VisitaListState extends State<VisitaList> {
   DateTime data_escolhida = DateTime.now();
   RestApi rest = RestApi();
 
-  var visitas = [
-    Visita(id: 1, data: "01/01/2019", hora_fim: "01/01/2019", hora_inicio: "01/01/2019", id_cliente: 2),
-    Visita(id: 1, data: "01/01/2019", hora_fim: "01/01/2019", hora_inicio: "01/01/2019", id_cliente: 2),
-    Visita(id: 1, data: "01/01/2019", hora_fim: "01/01/2019", hora_inicio: "01/01/2019", id_cliente: 2),
-    Visita(id: 1, data: "01/01/2019", hora_fim: "01/01/2019", hora_inicio: "01/01/2019", id_cliente: 2),
-  ];
 
   void handleNewDate(date) {
     print(date.toString());
@@ -39,6 +33,62 @@ class _VisitaListState extends State<VisitaList> {
               arguments: data_escolhida.day.toString() + "/" + data_escolhida.month.toString() + "/" + data_escolhida.year.toString());
         },
         child: Icon(Icons.add),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text(
+                "Fabiano Gadenz",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              accountEmail: Text("fabianogadenz@gmail.com"),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Text(
+                  "F",
+                  style: TextStyle(fontSize: 40.0),
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Armadilhas'),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.pushNamed(context, '/armadilhas');
+              },
+            ),
+            ListTile(
+              title: Text('Clientes'),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.pushNamed(context, '/clientes');
+              },
+            ),
+            ListTile(
+              title: Text('Visitas'),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.pushNamed(context, '/visita');
+              },
+            ),
+            Divider(
+              height: 2.0,
+            ),
+            ListTile(
+              title: Text('Sair'),
+              trailing: Icon(Icons.exit_to_app),
+              onTap: () {
+                Navigator.pushNamed(context, '/');
+
+                // Update the state of the app
+                // ...
+              },
+            ),
+          ],
+        ),
       ),
       body: Container(
           height: double.infinity,

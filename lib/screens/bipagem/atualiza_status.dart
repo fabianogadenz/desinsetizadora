@@ -1,14 +1,21 @@
+import 'package:desinsetizadora/arguments/visitaStatusArgument.dart';
+import 'package:desinsetizadora/data/rest_api.dart';
 import 'package:flutter/material.dart';
 
 class AtualizaStatus extends StatefulWidget {
+  final VisitaStatusArgument visArgument;
+
+  AtualizaStatus({Key key, @required this.visArgument}) : super(key: key);
+
   @override
   _AtualizaStatusState createState() => _AtualizaStatusState();
 }
 
 class _AtualizaStatusState extends State<AtualizaStatus> {
-  List _situacoes = ["Disponível", "Ocupado", "Danificado", "Manutenção Pendente", "Em Manutenção"];
+  List _situacoes = ["DISPONIVEL", "OCUPADO", "DANIFICADO", "MANUTENCAO_PENDENTE", "EM_MANUTENCAO"];
 
 
+  RestApi rest = new RestApi();
   final _formKey = GlobalKey<FormState>();
   List<DropdownMenuItem<String>> _dropDownMenuItems;
 
@@ -45,7 +52,20 @@ class _AtualizaStatusState extends State<AtualizaStatus> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.pop(context);
+          print("testeeee");
+          VisitaStatusArgument argumento = VisitaStatusArgument(
+              widget.visArgument.idArmadilha,
+              widget.visArgument.idCliente,
+              widget.visArgument.idVisita,
+              widget.visArgument.status_antigo,
+              _situacaoArmadilha,
+              widget.visArgument.data,
+              widget.visArgument.posicao);
+          rest.addArmadilhaClienteCheck(argumento);
+          Future.delayed(Duration(milliseconds: 2000)).then((teste){
+            Navigator.pop(context);
+          });
+
         },
         child: Icon(Icons.save),
       ),

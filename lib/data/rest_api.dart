@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:desinsetizadora/arguments/visitaStatusArgument.dart';
 import 'package:desinsetizadora/models/armadilha.dart';
 import 'package:desinsetizadora/models/cliente.dart';
 import 'package:desinsetizadora/models/cliente_visita.dart';
@@ -19,7 +20,10 @@ class RestApi {
   static final VISITAS_URL = BASE_URL + "/visitas";
   static final VISITS_CLIENTE_INFO_URL = BASE_URL + "/visita_cliente_info";
   static final LAST_ARMADILHA = BASE_URL + "/last_armadilha";
-  static final ARMADILHAS_CLIENTES = BASE_URL + "/armadilhas-clientes";
+  static final ARMADILHAS_CLIENTES = BASE_URL + "/armadilhas_clientes";
+  static final VISITA_CHECKIN = BASE_URL + "/visita-checkin";
+  static final VISITA_CHECKOUT = BASE_URL + "/visita-checkout";
+  static final ARMADILHAS_VISITAS = BASE_URL + "/armadilhas-visita";
 
 
   Future<List<Cliente>> buscaClientes() async {
@@ -81,7 +85,7 @@ class RestApi {
     final response = await clientHttp.post(ADD_ARMADILHA_URL, body: {
       "nome":nome.toString(),
       "obs": observacao.toString(),
-      "situacao": status.toString(),
+      "situacao": "DISPONIVEL",
     });
     if(response.statusCode == 200){
       print("status code 200");
@@ -132,7 +136,6 @@ class RestApi {
 
   Future<ClienteVisita> buscaVisitaClienteInfo(int id) async {
     ClienteVisita _cliVisInfo;
-    print("teste"+ id.toString());
     try {
       final response = await clientHttp.get(VISITS_CLIENTE_INFO_URL+ "/"+ id.toString());
       var jsonData = json.decode(response.body);
@@ -165,6 +168,65 @@ class RestApi {
       throw Exception("Falha ao inserir DADOS.");
     }
   }
+
+  Future<List<Armadilha>> buscaArmadilhasIdCliente(String idCliente) async {
+    print(ARMADILHAS_CLIENTES+ "/"+ idCliente);
+    List<Armadilha> listArmadilhas = [];
+    try {
+      final response = await clientHttp.get(ARMADILHAS_CLIENTES+ "/"+ idCliente);
+      var jsonData = json.decode(response.body);
+      for (var u in jsonData)
+        listArmadilhas.add(new Armadilha.fromJson(u));
+      return listArmadilhas;
+    } on Exception catch (_) {}
+  }
+  Future checkinVisita(int id, String data) async{
+    final response = await clientHttp.put(VISITA_CHECKIN+ "/"+ id.toString(), body: {
+      "hora_inicio":data,
+    });
+    if(response.statusCode == 200){
+      print("status code 200");
+    }else{
+      throw Exception("Falha ao inserir Cliente.");
+
+    }
+  }
+  Future checkOutVisita(int id, String data) async{
+    final response = await clientHttp.put(VISITA_CHECKOUT+ "/"+ id.toString(), body: {
+      "hora_fim":data,
+    });
+    if(response.statusCode == 200){
+      print("status code 200");
+    }else{
+      throw Exception("Falha ao inserir Cliente.");
+
+    }
+  }
+
+  Future addArmadilhaClienteCheck(VisitaStatusArgument visData) async{
+    print("oioi");
+    final response = await clientHttp.post(ARMADILHAS_VISITAS, body: {
+      "id_armadilha":visData.idArmadilha.toString(),
+      "id_cliente": visData.idCliente.toString(),
+      "id_visita": visData.idVisita.toString(),
+      "status_antigo": visData.status_antigo.toString(),
+      "status_novo": visData.status_novo.toString(),
+      "posicao": visData.posicao.toString(),
+      "data": visData.data.toString()
+    });
+    final response2 = await clientHttp.put(ADD_ARMADILHA_URL+ "/"+ visData.idArmadilha.toString(), body: {
+      "situacao":visData.status_novo.toString(),
+    });
+
+//    if(response.statusCode == 200 && response2.statusCode == 200){
+    if( response.statusCode == 200){
+      print("testestatus code 200");
+      return response;
+    }else{
+      throw Exception("Falha ao inserir.");
+    }
+  }
+
 
 
 

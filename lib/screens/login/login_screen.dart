@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         minWidth: 200.0,
                         height: 46.0,
                         onPressed: () {
-                          Navigator.pushNamed(context, '/home');
+                          Navigator.pushNamed(context, '/visita');
                         },
                         color: Colors.white,
                         child: Text('Login'),

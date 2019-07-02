@@ -49,7 +49,7 @@ class _ClienteDetailState extends State<ClienteDetail> {
               });
             }
             else
-              _scaffoldKey.currentState.showSnackBar(snackbarSuccess);
+              _scaffoldKey.currentState.showSnackBar(snackbarErro);
 
           });
         },

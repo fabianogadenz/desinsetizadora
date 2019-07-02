@@ -37,8 +37,10 @@ class _NewArmadilhaState extends State<newArmadilha> {
 
   void changedDropDownItem(String selectedSituacao) {
     setState(() {
+
       _situacaoArmadilha = selectedSituacao;
     });
+
   }
 
 
@@ -54,14 +56,6 @@ class _NewArmadilhaState extends State<newArmadilha> {
       appBar: AppBar(
         title: Text("Adicionar Armadilha"),
         centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
-              onPressed: () {})
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -123,25 +117,25 @@ class _NewArmadilhaState extends State<newArmadilha> {
                     contentPadding: const EdgeInsets.only(top: 30, right: 30.0, bottom: 30.0, left: 5.0),
                   ),
                 ),
-                new Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: new Container(
-                    decoration: new BoxDecoration(
-                      border: new Border(
-                        bottom: new BorderSide(
-                          color: Colors.green,
-                        ),
-                      ),
-                    ),
-                    child: DropdownButton(
-                      isExpanded: true,
-                      value: _situacaoArmadilha,
-                      items: _dropDownMenuItems,
-                      //onChanged: bloc.updateStatus,
-                      onChanged: changedDropDownItem,
-                    ),
-                  ),
-                ),
+//                new Container(
+//                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+//                  child: new Container(
+//                    decoration: new BoxDecoration(
+//                      border: new Border(
+//                        bottom: new BorderSide(
+//                          color: Colors.green,
+//                        ),
+//                      ),
+//                    ),
+//                    child: DropdownButton(
+//                      isExpanded: true,
+//                      value: _situacaoArmadilha,
+//                      items: _dropDownMenuItems,
+//                      //onChanged: bloc.updateStatus,
+//                      onChanged: changedDropDownItem,
+//                    ),
+//                  ),
+//                ),
 
                 FutureBuilder<List<Cliente>>(
                     future: rest.fetchCliente(),
