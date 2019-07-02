@@ -4,11 +4,11 @@ O aplicativo app_desinsetizadora desenvolvido na matéria de desenvolvimento de 
 realizar cadastro de armadilhas, clientes, visitas e os gerenciar, para que o usuário consiga gerenciar suas atividades  de manutenção na área de desinsetizadora.
 
 
-##Instalação do NodeJS e do NPM
+## Instalação do NodeJS e do NPM
 
 - [Acesse](https://nodejs.org);
 
-##Instalação do MySQL ou MariaDB
+##Instalação do MySQL
 
 - [Acesse](https://www.mysql.com/) para instalar o MySQL;
 Instale a base de dados conforme instruções no site.
